@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Message from 'components/Message';
-import 'components/Chat/Chat.css';
+import './Chat.css';
 
 export default class Chat extends Component {
   state = {
@@ -8,11 +8,16 @@ export default class Chat extends Component {
     messageInput: ''
   };
 
+  messageRef = React.createRef();
+
+  componentDidUpdate() {
+    const messageList = this.messageRef.current;
+    messageList.scrollTop = messageList.scrollHeight;
+  }
+
   changeInputMessage = event => {
     const inputValue = event.target.value;
-    this.setState(state => ({
-      messageInput: inputValue
-    }));
+    this.setState({ messageInput: inputValue });
   };
 
   sendMessageOnEnter = event => {
@@ -25,12 +30,12 @@ export default class Chat extends Component {
   };
 
   render() {
-    const arrMessages = this.state.messages;
+    const { messages } = this.state;
     return (
       <div className={'chat'}>
-        <div className={'message-list'}>
+        <div className={'message-list'} ref={this.messageRef}>
           <ul className={'messages'}>
-            {arrMessages.map((message, index) => {
+            {messages.map((message, index) => {
               return <Message key={index} text={message.text} />;
             })}
           </ul>
